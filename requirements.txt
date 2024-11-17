@@ -5,3 +5,4 @@ numpy
 pymupdf
 underthesea
 pydantic
+python-multipart

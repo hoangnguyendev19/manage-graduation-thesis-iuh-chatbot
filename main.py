@@ -7,7 +7,6 @@ import fitz  # PyMuPDF for faster PDF processing
 import os
 import numpy as np
 import tempfile
-import requests
 
 app = FastAPI()
 
@@ -88,44 +87,11 @@ async def check_plagiarism(file: UploadFile = File(...)):
         for filename, ref_file_path in get_reference_files(REFERENCE_FOLDER):
             ref_text = extract_text_from_pdf(ref_file_path)
             similarity = calculate_similarity(uploaded_text, ref_text)
-            results.append({"reference": filename, "similarity": similarity})
+            # results.append({"reference": filename, "similarity": similarity})
+            results.append({"similarity": round(similarity * 100, 2)})
 
         results.sort(key=lambda x: x["similarity"], reverse=True)
         return {"plagiarism_results": results}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# AI Detection API endpoint and key
-AI_DETECTION_API_URL = "https://api.sapling.ai/api/v1/aidetect" # sapling.ai
-API_KEY = "7RLION9EJPPSH8OAB5HCR4RS3T4GKMOJ"
-
-# Send text to AI detection API
-def check_ai_content(text):
-    response = requests.post(
-        AI_DETECTION_API_URL,
-        json={"key": API_KEY, "text": text}
-    )
-    print(response.json())
-    if response.status_code == 200:
-        return response.json()
-    else:
-        
-        raise HTTPException(status_code=500, detail="Failed to connect to AI detection API")
-
-# Endpoint to check AI-generated content in PDF
-@app.post("/api/v1/check-ai-content")
-async def check_ai_content_pdf(file: UploadFile = File(...)):
-    try:
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(await file.read())
-            temp_file_path = temp_file.name
-
-        extracted_text = extract_text_from_pdf(temp_file_path)
-        os.remove(temp_file_path)
-
-        result = check_ai_content(extracted_text)
-        return {"ai_detection_result": result}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
