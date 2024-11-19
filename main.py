@@ -40,7 +40,8 @@ def calculate_similarity(text1, text2):
     return similarity
 
 # Reference folder path
-REFERENCE_FOLDER = "D:/Document_University/KLTN/Docs_CoHanh/KLTN_Documents"
+REFERENCE_FOLDER = "D:/Vscode/manage-graduation-thesis-iuh-be/public/uploads" # Windows
+# REFERENCE_FOLDER = "/home/fit_se/manage-graduation-iuh/server/public/uploads" # Linux
 
 # Yield file names and paths from reference folder
 def get_reference_files(folder_path):
