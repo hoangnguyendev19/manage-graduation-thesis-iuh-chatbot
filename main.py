@@ -40,15 +40,26 @@ def calculate_similarity(text1, text2):
     return similarity
 
 # Reference folder path
-REFERENCE_FOLDER = "D:/Vscode/manage-graduation-thesis-iuh-be/public/uploads" # Windows
-# REFERENCE_FOLDER = "/home/fit_se/manage-graduation-iuh/server/public/uploads" # Linux
+# REFERENCE_FOLDER = "D:/Vscode/manage-graduation-thesis-iuh-be/public/uploads" # Windows
+REFERENCE_FOLDER = "/app/public/uploads" # Linux
 
-# Yield file names and paths from reference folder
+# Yield file names and paths from the reference folder
 def get_reference_files(folder_path):
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if file_path.endswith(".pdf"):
-            yield filename, file_path
+    try:
+        # Ensure the directory exists
+        if not os.path.exists(folder_path):
+            raise FileNotFoundError(f"The folder '{folder_path}' does not exist.")
+        if not os.path.isdir(folder_path):
+            raise NotADirectoryError(f"'{folder_path}' is not a directory.")
+
+        # Iterate through files in the directory
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            # Check if the file is a PDF
+            if os.path.isfile(file_path) and file_path.endswith(".pdf"):
+                yield filename, file_path
+    except Exception as e:
+        print(f"Error while accessing files: {e}")
 
 # Topic suggestion endpoint
 @app.post("/api/v1/suggest-topics")
