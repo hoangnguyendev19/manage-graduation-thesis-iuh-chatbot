@@ -1,8 +1,6 @@
 fastapi
-uvicorn
-scikit-learn
 numpy
-pymupdf
-underthesea
 pydantic
-python-multipart
+scikit-learn
+underthesea
+uvicorn
